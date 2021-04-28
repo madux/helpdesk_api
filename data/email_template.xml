@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!--Email template -->
+        <record id="send_helpdesk_email_template" model="mail.template">
+            <field name="name">Helpdesk Ticket Generated - Send by Email</field>
+            <field name="model_id" ref="helpdesk_api.model_helpdeskticket_model"/>
+            <field name="auto_delete" eval="False"/>
+            <field name="subject">HELPDESK NOTIFICATION </field>
+             
+            <field name="body_html"><![CDATA[
+                <div style="padding:0px;width:960px;margin:auto;background: #FFFFFF repeat top /100%;color:#777777">
+                    <table cellspacing="0" cellpadding="0" style="width:600px;background:inherit;color:inherit">
+                        <tbody><tr>
+                            <td valign="center" width="200" style="padding:10px 10px 10px 5px;font-size: 12px">
+                                <img src="/logo.png" style="padding: 0px; margin: 0px; height: auto; width: 80px;" alt="${object.write_uid.company_id.name}">
+                            </td>
+                        </tr></tbody>
+                    </table>
+                </div>
+                <p>Dear Sir/Madam,<br/>
+                    <br/>
+                        A ticket have been created, kindly log in to the ERP System to assign the ticket for further processes
+                    </br>
+                        Regards
+                    </br>
+                
+                </p>
+                <br/>
+                <div style="width: 960px; margin: 0px; padding: 0px; background-color: #007bff; background-repeat: repeat no-repeat;">
+                    <h3 style="margin: 0px; padding: 2px 14px; font-size: 12px; color: #DDD;">
+                        &nbsp;
+                    </h3>
+                </div>
+                Company <br/>
+                Website: 
+            ]]></field>
+        </record>
+ 
+    </data>
+</odoo>
