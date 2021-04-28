@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+         <record id="seq_helpdesk_ticket_model_id" model="ir.sequence">
+            <field name="name">helpdeskticket.model</field>
+            <field name="code">helpdeskticket.model</field>
+            <field name="prefix">#SUP</field>
+            <field name="padding">6</field>
+        </record>
+         
+    </data>
+</odoo>
