@@ -30,5 +30,4 @@
     "images": ['images/cover_thumbnail.png'],
     'application': True,
     "sequence": 3,
-    "license": "AGPL",
 }
