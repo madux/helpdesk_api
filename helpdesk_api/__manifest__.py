@@ -27,7 +27,7 @@
 
     ],
     "active": False,
-    "images": ['images/cover_thumbnail.png'],
+    "images": ['images/main_cover.jpg'],
     'application': True,
     "sequence": 3,
 }
