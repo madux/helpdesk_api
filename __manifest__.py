@@ -6,7 +6,7 @@
 {
     'name': 'Helpdesk Issue Tracker',
     'version': '1.5',
-    'author': "Maduka Chris Sopulu",
+    'author': "Maach Softwares / Maduka Chris Sopulu",
     'category': 'Helpdesk',
     'summary': 'Helpdesk support application',
     'depends': ['base', 'mail'],

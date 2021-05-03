@@ -212,7 +212,7 @@
                 <header> 
                     <button name="assign_issue" string="Assign To Me" type="object" class="oe_highlight" groups="helpdesk_api.group_helpdesk_issue_user,helpdesk_api.group_helpdesk_issue_manager"/>
                     <button name="send_by_mail_button" string="Send by mail" type="object" class="oe_highlight" groups="helpdesk_api.group_helpdesk_issue_user,helpdesk_api.group_helpdesk_issue_manager"/>
-                    <field name="stage_id" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}" readonly= "0"/>
+                    <field name="stage_id" widget="statusbar" readonly="0" options="{'clickable': '1', 'fold_field': 'fold'}"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
@@ -233,20 +233,37 @@
                     <group>
                         <group>
                             <field name="name" readonly="1" string ="Ticket #"/>
-                            <field name="client_name"/>
-                            <field name="client_email"/>
+                            <field name="ticket_type" required="1" string="Ticket Type"/>
+                            <field name="partner_id" string="Customer" attrs="{'invisible': [('ticket_type', '!=', 'customer')], 'required': [('ticket_type', '=', 'customer')]}"/>
+                            <field name="client_name" attrs="{'invisible': [('ticket_type', '=', 'customer')], 'required': [('ticket_type', '!=', 'customer')]}"/>
+                            <field name="client_email" attrs="{'invisible': [('ticket_type', '=', 'customer')], 'required': [('ticket_type', '!=', 'customer')]}"/>
                             <field name="category" options="{'no_create': True}"/>
-                            <field name="assigned_user"/>
                         </group>
                         <group>
                             <field name="priority"/>
                              <!-- widget="priority"/> -->
-                            <field name="expected_date" />
+                            <field name="expected_date" readonly="1"/>
                             <field name="write_ids" widget="many2many_tags" readonly="1"/>
                             <field name="duration"/>
+                            <field name="assigned_user"/>
+
                         </group>
                     </group>
                     <field name="note" class="field_description" placeholder="Other Notes to the ticket..."/>
+                    <notebook>
+                        <page string="Sent Emails">
+                            <field name = "email_logs">
+                                <tree string="Mails">
+                                    <field name = "date"/>
+                                    <field name = "subject"/>
+                                    <field name = "author_id"/>
+                                    <field name = "email_to"/>
+                                    <field name = "state" string="Status"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook> 
+
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>

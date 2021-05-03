@@ -12,25 +12,33 @@ class TicketModel(models.Model):
     _name = 'helpdeskticket.model'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
+    def _get_user_tickets(self):
+        tickets = self.env['helpdeskticket.model'].search_count([('create_uid', '=', self.env.user.id)])
+        if tickets:
+            return int(tickets) if tickets else 0
 
     name = fields.Char(string="Ticket Id")
     description = fields.Char(string="Description")
     note = fields.Text(string="Notes")
     assigned_user = fields.Many2one('res.users', string="Assignee")
-    client_email = fields.Char(string="Client Email", required=True)
-    client_name = fields.Char(string="Client Name", required=True)
+    client_email = fields.Char(string="Client Email",)
+    client_name = fields.Char(string="Client Name",)
 
+    partner_id = fields.Many2one("res.partner", string="Customer", required=False)
+    email_logs = fields.Many2many("mail.mail", string="Mails", readonly=True)
     category = fields.Many2one("helpdeskcategory.model", string="Category", required=False)
     duration = fields.Integer(string="Duration")# , compute="compute_ticket_duration")
-    num_tickets = fields.Integer(string="Duration")
+    num_tickets = fields.Integer(string="Tickets", default= lambda self: self._get_user_tickets())
     color = fields.Integer('Color')
 
+    ticket_type = fields.Selection([('customer', 'Customer Centered'), ('issue', 'Issue'), ('other', 'Others')], default='issue', string="Ticket Type")
     priority = fields.Selection([('high', 'High'), ('low', 'Low'), ('medium', 'Medium')], default='low', string="Priority")
     expected_date = fields.Datetime(string='Deadline Date')
     write_ids = fields.Many2many('res.users', string="Modifiers")
     stage_id = fields.Many2one('helpdeskstages.model', string="Stages")
     active = fields.Boolean(string="Active", default=True)
     close_ticket = fields.Boolean(string="Closed", default=False)
+
 
     @api.model
     def create(self, vals):
@@ -58,28 +66,38 @@ class TicketModel(models.Model):
 
     @api.onchange('stage_id')
     def move_stage_action(self):
-        if self.stage_id:
-            body = "Dear {0}, <br/>This is to inform you that ticket with ID {1}\
-                 have been move the next stage - {2}.<br/>\
-                 Regards".format(self.client_name, self.name, self.stage_id.name)
-            self.send_mail(self.env.user.email, self.client_email, False, body, False)
+        email_to = self.validate_and_get_email()
+        # if self.stage_id:
+        body = "Dear {0}, <br/>This is to inform you that ticket with ID {1}\
+                have been move the next stage - {2}.<br/>\
+                Regards".format(self.client_name, self.name, self.stage_id.name)
+        self.send_mail(self.env.user.email, email_to, False, body, False)
+         
 
     def toggle_close_ticket_action(self):
         for rec in self:
+            email_to = rec.validate_and_get_email()
             status = True if not rec.close_ticket else False
             body = "Dear {0}, <br/>This is to inform you that ticket with ID {1}\
                  have been {2}. Kindly Confirm by replying to this mail.<br/>\
                  Regards".format(rec.client_name, rec.name, status)
-            rec.close_ticket = status 
-            rec.send_mail(self.env.user.email, rec.client_email, False, body, False)
+            rec.close_ticket = status
+            mail_id = rec.send_mail(self.env.user.email, email_to, False, body, False)
+            rec.write({
+                'email_logs': [(4, mail_id.id)]
+            })
 
     def assign_issue(self):
         for rec in self:
+            email_to = rec.validate_and_get_email()
             rec.assigned_user = self.env.user.id
             body = "Dear {0}, <br/>This is to inform you that ticket with ID {1}\
                  is in progress and have been assigned to - {2}.<br/>\
                  Regards".format(rec.client_name, rec.name, rec.assigned_user.name)
-            self.send_mail(self.env.user.email, self.client_email, False, body, False) 
+            mail_id = self.send_mail(self.env.user.email, email_to, False, body, False) 
+            rec.write({
+            'email_logs': [(4, mail_id.id)]
+            })
 
     def all_my_tickets(self):
         return self.get_my_ticket_action_record()
@@ -90,15 +108,31 @@ class TicketModel(models.Model):
     @api.onchange('category')
     def compute_ticket_deadline(self):
         current_date = datetime.now()
-        duration = self.category.highest_duration
-        end_time = current_date + timedelta(minutes=duration)
-        self.expected_date = end_time
+        if self.category:
+            duration = self.category.highest_duration
+            end_time = current_date + timedelta(days=duration)
+            self.expected_date = end_time
+
+    def validate_and_get_email(self):
+        email_to = None
+        if self.client_email:
+            email_to = self.client_email
+
+        if self.partner_id and not self.partner_id.email:
+            raise ValidationError('The selected partner does not have an email configured')
+        else:
+            email_to = self.partner_id.email
+        return email_to
 
     def send_by_mail_button(self):
-        custombody = self.category.custom_html or self.category.auto_msgs
+        custombody = self.category.custom_html or self.category.auto_msgs 
+        email_to = self.validate_and_get_email()
         if not custombody:
-            raise ValidationError("There is no message provided in the category custom html or Automated Message") 
-        self.send_mail(self.env.user.email, self.client_email, False, custombody, False)
+            raise ValidationError("There is no message provided in the category custom html or Automated Message")
+        mail_id = self.send_mail(self.env.user.email, email_to, False, custombody, False)
+        self.write({
+            'email_logs': [(4, mail_id.id)]
+        })
 
     def send_mail(self, email_from, mail_to, client_send = False, custom_body = None, attachment=None):
         body = self.env.ref('helpdesk_api.send_helpdesk_email_template')
@@ -116,6 +150,8 @@ class TicketModel(models.Model):
             'body_html': body_html,
         }
         mail_id = self.env['mail.mail'].create(mail_data)
+        return mail_id 
+        
         # self.env['mail.mail'].send(mail_id)
  
     def get_record_reference(self):
