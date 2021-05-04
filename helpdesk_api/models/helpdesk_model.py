@@ -131,7 +131,6 @@ class TicketModel(models.Model):
         email_to = self.validate_and_get_email()
         if not custombody:
             raise ValidationError("There is no message provided in the category custom html or Automated Message")
-        
         mail_id = self.send_mail(self.env.user.email, email_to, False, custombody, False)
         self.write({
             'email_logs': [(4, mail_id.id)]

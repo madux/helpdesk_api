@@ -93,7 +93,7 @@
                         <group>
                             <field name="name"/>
                             <field name="sequence"/>
-                            <field name="apply_on" widget="many2many_tags" options="{'color_field': 'color', 'no_create': True}"/>
+                            <field name="apply_on" widget="many2many_tags" options="{'no_create': True}"/>
                         </group>
                         <group>
                             <field name="is_close"/>
@@ -210,7 +210,7 @@
                 <header> 
                     <button name="assign_issue" string="Assign To Me" type="object" class="oe_highlight" groups="helpdesk_api.group_helpdesk_issue_user,helpdesk_api.group_helpdesk_issue_manager"/>
                     <button name="send_by_mail_button" string="Send by mail" type="object" class="oe_highlight" groups="helpdesk_api.group_helpdesk_issue_user,helpdesk_api.group_helpdesk_issue_manager"/>
-                    <field name="stage_id" widget="statusbar" readonly="0" options="{'clickable': '1', 'fold_field': 'fold'}"/>
+                    <field name="stage_id" widget="statusbar" readonly="0" options="{'clickable': '1'}"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
