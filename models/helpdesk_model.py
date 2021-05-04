@@ -125,7 +125,9 @@ class TicketModel(models.Model):
         return email_to
 
     def send_by_mail_button(self):
-        custombody = self.category.custom_html or self.category.auto_msgs 
+        if not self.category:
+            raise ValidationError("Please select a category")
+        custombody = self.category.custom_html or self.category.auto_msgs or "No message"
         email_to = self.validate_and_get_email()
         if not custombody:
             raise ValidationError("There is no message provided in the category custom html or Automated Message")
