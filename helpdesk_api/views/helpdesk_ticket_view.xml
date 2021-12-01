@@ -1,6 +1,26 @@
 <?xml version="1.0"?>
 <odoo>
 
+
+    <record id="helpdesk_sla_model_action_id" model="ir.actions.act_window">
+        <field name="name">SLA Policies</field>
+        <field name="res_model">helpdesk.tracker.sla</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Create a new Service Level Agreement (SLA) policy
+          </p><p>
+            A service level agreement is a contract between you and your
+            customers that specifies performance measures for support
+            by ticket priority.
+          </p><p>
+            For example, we respond to urgent tickets related to bugs
+            in two hours and resolve them within 36 hours.
+          </p>
+        </field>
+    </record>
+
+
     <menuitem id="menu_helpdesk_ticket_issue_root" name="Helpdesk Issue Tracker"
         sequence="25"
         web_icon="helpdesk_api,static/description/icon.png"
@@ -9,6 +29,10 @@
     <menuitem id="helpdesk_issue_menu_config" name="Configuration"
         sequence="50" parent="helpdesk_api.menu_helpdesk_ticket_issue_root"
         groups="helpdesk_api.group_helpdesk_issue_manager"/>
+
+    <menuitem id="helpdesk_sla_model_menu" name="SLA Policies"
+        sequence="50" parent="helpdesk_api.helpdesk_issue_menu_config"
+        groups="helpdesk_api.group_helpdesk_issue_manager" action="helpdesk_sla_model_action_id"/>
 
     <!-- HELPDESK.CATEGORY -->
     <record id="helpdeskcategory_model_view_tree" model="ir.ui.view">
@@ -39,12 +63,57 @@
                             <field name="name"/>
                             <field name="user_ids" widget="many2many_tags"/>
                             <field name="code"/>
+                            <field name="use_sla"/>
+                            <field name="sla_id"/>
                         </group>
                         <group>
                             <field name="highest_duration"/>
                             <field name="email"/>
                             <field name="auto_msgs" placeholder="Enter Short Mail response to client"/>
                             <field name="custom_html" placeholder="Add default custom text"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- HELPDESK.SLA -->
+    <record id="helpdesksla_model_view_tree" model="ir.ui.view">
+        <field name="name">helpdesk.tracker.sla.tree</field>
+        <field name="model">helpdesk.tracker.sla</field>
+        <field name="arch" type="xml">
+            <tree string="Category">
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="stage_id"/>
+                <field name="priority"/>
+                <field name="company_id"/>
+                <field name="time_days"/>
+                <field name="time_hours"/>
+            </tree>
+        </field>
+    </record>
+ 
+    <record id="helpdesksla_model_view_form" model="ir.ui.view">
+        <field name="name">helpdesk.tracker.sla.form</field>
+        <field name="model">helpdesk.tracker.sla</field>
+        <field name="arch" type="xml">
+            <form string="SLA">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="category_id"/>
+                            <field name="stage_id"/>
+                            
+                        </group>
+                        <group>
+                            <field name="priority" widget="radio"/>
+                            <field name="company_id"/>
+                            <field name="response"/>
+                            <field name="time_days"/>
+                            <field name="time_hours"/>
                         </group>
                     </group>
                 </sheet>
@@ -158,7 +227,7 @@
                 <field name="category"/>
                 <field name="client_email"/>
                 <field name="priority"/>
-                <field name="expected_date"/>
+                <field name="expected_date" force_save="1"/>
                 <filter string="My Tickets" domain="[('assigned_user','=',uid)]" name="my_ticket"/>
                 <filter string="Unassigned Tickets" domain="[('assigned_user','=',False)]" name="unassigned"/>
                 <separator/>
@@ -239,17 +308,19 @@
                         </group>
                         <group>
                             <field name="priority"/>
+                            <field name="sla_id" options="{'no_create': True}"/>
+                            <field name="sla_duration" options="{'no_create': True}"/>
                              <!-- widget="priority"/> -->
-                            <field name="expected_date" readonly="1"/>
+                            <field name="expected_date" readonly="1" force_save="1"/>
                             <field name="write_ids" widget="many2many_tags" readonly="1"/>
                             <field name="duration"/>
                             <field name="assigned_user"/>
 
                         </group>
                     </group>
-                    <field name="note" class="field_description" placeholder="Other Notes to the ticket..."/>
+                    <field name="note" class="field_description" placeholder="Provide description for this ticket..." required="1"/>
                     <notebook>
-                        <page string="Sent Emails">
+                        <page string="Emails Logs">
                             <field name = "email_logs">
                                 <tree string="Mails">
                                     <field name = "date"/>
