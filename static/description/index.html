@@ -1,0 +1,75 @@
+<section class="oe_container">
+    <div class="oe_row oe_spaced">
+            <h2 class="oe_slogan"><b>Helpdesk Issue Tracker</b></h2>
+            <p class="oe_mt32">
+                    <b>This module provide feature to help you Track issues from Clients/ Customers. </b>
+            </p><br/>
+            <p class="oe_mt32">
+                <b>It also comes with an easy to connect api connector that be consumed by any application. </b>
+            </p><br/>
+            
+            <h2><p style="color:Teal;">Video Demo: <a href="https://youtu.be/MEtAQwIvQqM"> <b>Click Here to Watch Demo</b></a></p></h2><br/>
+            <p>- For configuration: Simply Install the module "helpdesk_api".<br/>
+            Open the module, click on configuration.<br/>
+            Setup the stages and categories.<br/>
+            </p><br/>
+            
+            <p>- To generate a ticket on the odoo view: Click on helpdesk Issue Tracker Module <b>'Create a ticket'</b> Add the required fields and save.</p><br/>
+            <p>-We provided a dynamic email feature to send mail when issues are dragged from one stage to another</p><br/>
+            <p>- Also you can add or assign to multiple team.</p><br/>
+           <br/>
+
+            <p>
+            For API use:
+            <p>- Ensure your Json payload is as follows; .</p> <br/>
+            <p>- '{
+                "contact_details": {
+                    'client_name': "Ebuka Chinedu", 
+                    'client_email': "Ebuka Chinedu", 
+                    'client_phone': "+2347067979346", 
+                    },
+                "ticket_items": {
+                    "description": "Request for a fix...",
+                    "category_id": 1,
+                    "priority": 1', #1 high,  2 medium, 3 low
+                }
+        
+            }'
+            </p> <br/>
+            <p>- API Link: 'https://yourhostname/api/v1/issue/create' </p> <br/>
+            </p> <br/>
+
+    </div>
+    </section>
+    <!-- <section class="oe_container">
+        <div class="oe_row">
+            <h2 class="oe_slogan"><b style="color:Grey;" >Module Menu Icon</h2>
+                <p>
+                    <div class="oe_demo oe_screenshot">
+                        <img style="max-height:100px;max-width:100px;" src="menu_icon.png">
+                    </div>
+                </p>
+        </div>
+    </section>
+    <section class="oe_container">
+        <div class="oe_row">
+            <h2 class="oe_slogan"><b style="color:Grey;" >The wizard View</h2>
+            <p style="color:Teal;">Wizard form view</p>
+                <p>
+                    <div class="oe_demo oe_screenshot">
+                        <img style="max-height:180px;max-width:400px;" src="wizard.png">
+                    </div>
+                </p>
+        </div>
+    </section>
+    <section class="oe_container">
+        <div class="oe_row">
+            <h2 class="oe_slogan"><b style="color:Grey;" >Easy To report from any view</h2>
+            <p style="color:Teal;"> Flexible operation</p>
+                <p>
+                    <div class="oe_demo oe_screenshot">
+                        <img style="max-height:180px;max-width:400px;" src="all_generate.png">
+                    </div>
+                </p>
+        </div>
+    </section> -->
