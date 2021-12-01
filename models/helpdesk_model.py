@@ -27,9 +27,17 @@ class TicketModel(models.Model):
     partner_id = fields.Many2one("res.partner", string="Customer", required=False)
     email_logs = fields.Many2many("mail.mail", string="Mails", readonly=True)
     category = fields.Many2one("helpdeskcategory.model", string="Category", required=False)
+    sla_id = fields.Many2one('helpdesk.tracker.sla', string="SLA")
     duration = fields.Integer(string="Duration")# , compute="compute_ticket_duration")
     num_tickets = fields.Integer(string="Tickets", default= lambda self: self._get_user_tickets())
     color = fields.Integer('Color')
+    sla_duration = fields.Char('SLA Duration')
+
+    @api.onchange('sla_id')
+    def onchange_sla_id(self):
+        if self.sla_id.time_hours:
+            hours = self.sla_id.time_hours if self.sla_id.time_hours else ""
+            self.sla_duration = f'{self.sla_id.time_hours} Days, {hours} Hours'
 
     ticket_type = fields.Selection([('customer', 'Customer Centered'), ('issue', 'Issue'), ('other', 'Others')], default='issue', string="Ticket Type")
     priority = fields.Selection([('high', 'High'), ('low', 'Low'), ('medium', 'Medium')], default='low', string="Priority")
@@ -56,6 +64,7 @@ class TicketModel(models.Model):
         for rec in self:
             if rec.category:
                 lists = []
+                rec.sla_id = rec.category.sla_id.id 
                 stage_ids = self.env['helpdeskstages.model'].search([])
                 for stg in stage_ids:
                     categ_ids = stg.mapped('apply_on').filtered(lambda s: s.id == self.category.id)
@@ -66,12 +75,13 @@ class TicketModel(models.Model):
 
     @api.onchange('stage_id')
     def move_stage_action(self):
-        email_to = self.validate_and_get_email()
-        # if self.stage_id:
-        body = "Dear {0}, <br/>This is to inform you that ticket with ID {1}\
-                have been move the next stage - {2}.<br/>\
-                Regards".format(self.client_name, self.name, self.stage_id.name)
-        self.send_mail(self.env.user.email, email_to, False, body, False)
+        self.send_stage_notification()
+        # email_to = self.validate_and_get_email()
+        # # if self.stage_id:
+        # body = "Dear {0}, <br/>This is to inform you that ticket with ID {1}\
+        #         have been move the next stage - {2}.<br/>\
+        #         Regards".format(self.client_name, self.name, self.stage_id.name)
+        # self.send_mail(self.env.user.email, email_to, False, body, False)
          
 
     def toggle_close_ticket_action(self):
@@ -96,6 +106,18 @@ class TicketModel(models.Model):
                  Regards".format(rec.client_name, rec.name, rec.assigned_user.name)
             mail_id = self.send_mail(self.env.user.email, email_to, False, body, False) 
             rec.write({
+            'email_logs': [(4, mail_id.id)]
+            })
+
+    def send_stage_notification(self):
+        for rec in self:
+            email_to = rec.validate_and_get_email()
+            user = self.env.user.name
+            body = "Dear {0}, <br/>This is to inform you that ticket with ID {1}\
+                 is moved to {2} by {3}.<br/>\
+                 Regards".format(rec.client_name, rec.name, rec.stage_id.name, user)
+            mail_id = self.send_mail(self.env.user.email, email_to, False, body, False) 
+            rec.update({
             'email_logs': [(4, mail_id.id)]
             })
 
