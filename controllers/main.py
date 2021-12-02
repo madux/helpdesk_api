@@ -77,18 +77,25 @@ class APIController(http.Controller):
         #     http.Response.status = "400"
         #     return {"status": "failure", "message": ',\n'.join(error_item)}
         try:
+            category_id = kw.get("category")
+            category = request.env['helpdeskcategory.model'].sudo().search([("id", "=", int(category_id))], limit=1)
+            sla_id = category.sla_id
             vals = {
                 'description': kw.get("description"),
                 'category': int(kw.get("category")),
                 'client_email': kw.get("client_email"),
                 'client_name': kw.get("client_name"),
+                'note': kw.get("note"),
                 'active': True,
+                'sla_id': sla_id and sla_id.id,
                 'priority': kw.get("priority"),
             }
             ticket = HelpdeskTicket.create(vals)
-
-            # ticket.send_mail(
-            #     vals.get("client_email"), category_ref.email, True, None, False)
+            ticket.onchange_sla_id()
+            ticket.compute_ticket_deadline()
+            custombody = category.custom_html or category.auto_msgs or "No message"
+            ticket.send_mail(
+                category.email, vals.get("client_email"), True, custombody, False)
             http.Response.status = "201"
             return """<h1> Submitted successfully
         </h1>"""
