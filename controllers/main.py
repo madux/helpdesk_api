@@ -48,7 +48,7 @@ class APIController(http.Controller):
             "ticket_data": [{'id': category.id, 'ticket_id': category.name} for category in helpdesk_categories]
         }
 
-    @http.route("/api/v1/issues", type="json", auth="public", methods=["GET"], csrf=False)
+    @http.route("/api/v1/issues", type="http", auth="public", methods=["GET"], csrf=False)
     def get_issue(self, **kw):
         response = {
             "status": "success"
@@ -60,14 +60,14 @@ class APIController(http.Controller):
             "ticket_data": [{'id': ticket.id, 'ticket_id': ticket.name, 'client_email': ticket.client_email} for ticket in helpdesk_tickets]
         }
 
-    @http.route("/api/v1/issues", type="json", auth="public", methods=["POST"], csrf=False)
+    @http.route("/api/v1/issues", type="http", auth="public", methods=["POST"], csrf=False)
     def create_issue(self, **kw):
         response = {
             "status": "success"
         }
-        data = json.loads(request.httprequest.data.decode("utf8"))
+        data = request.httprequest.data.decode("utf8")
         HelpdeskTicket = request.env['helpdeskticket.model'].sudo()
-        _logger.info("API DATA %s" % data)
+        _logger.info("API DATA %s" % kw)
         # error_item = ["Error Found: "]
         # check_validation_errors = self.validate_fields(data)
         # error_item += check_validation_errors
@@ -76,23 +76,26 @@ class APIController(http.Controller):
         #     return {"status": "failure", "message": ',\n'.join(error_item)}
         try:
             vals = {
-                'description': data.get("description"),
-                'category': data.get("category"),
-                'client_email': data.get("client_email"),
-                'client_name': data.get("client_name"),
+                'description': kw.get("description"),
+                'category': kw.get("category"),
+                'client_email': kw.get("client_email"),
+                'client_name': kw.get("client_name"),
                 'active': True,
-                'priority': data.get("prioirity"),
+                'priority': kw.get("priority"),
             }
             ticket = HelpdeskTicket.create(vals)
 
             # ticket.send_mail(
             #     vals.get("client_email"), category_ref.email, True, None, False)
             http.Response.status = "201"
-            return {
-                "status": "successful",
-                "ticket_data": [{'id': c.id, 'ticket_id': c.name, 'client_email': c.client_email} for c in ticket]
-            }
+            return """<h1> Submitted successfully
+        </h1>"""
         except Exception as e:
             _logger.exception(e)
             http.Response.status = "400"
             return {"status": "failure", "message": str(e)}
+        
+    @http.route("/helpdesk/ticket", type="http", website=True, auth="public", methods=["GET"], csrf=False)
+    def home(self, **kw):
+        qcontext = {}
+        return request.render("helpdesk_api.helpdesk_ticket", qcontext=qcontext)

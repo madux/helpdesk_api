@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+
+        <template id="helpdesk_ticket" name="helpdesk_ticket">
+            <t t-call="website.layout">
+                <t t-set="head">
+                    <t t-call-assets="web.assets_common" t-js="false"/>
+                    <t t-call-assets="web.assets_frontend" t-js="false"/>
+                </t>
+                <t t-set="title">Helpdesk Ticket</t>
+                <main>
+                    <div id="wrap">
+                        <div class="oe_structure" data-oe-model="ir.ui.view">
+                            <section class="pt8 pb8">
+                                <div class="container">
+                                    <div class="row s_nb_column_fixed">
+                                        <div class="col-lg-12 s_title pt16 pb16">
+                                            <h1>Helpdesk Ticket</h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                        <div class="container mt-2">
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <div class="oe_structure">
+                                        <section class="s_text_block">
+                                            <div class="container">
+                                                <div class="row">
+                                                    <div class="col-lg-12">
+                                                        <p>
+                                                            You can set the rate and value of transaction for your currency here. By filling the `Rate` field 
+                                                            you are setting the equivalent of the currency in Naira. For example if you do $1 for #360, set the rate to 360.
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </div>
+                                    <form action="/api/v1/issues" method="post" enctype="multipart/form-data">
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="description">Description</label>
+                                                <input type="text" name="description" class="form-control" id="description" placeholder="Description"/>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="ticket_type">Ticket Type</label>
+                                                <input type="text" name="ticket_type" class="form-control" id="ticket_type" placeholder="Ticket Type e.g. Issue" />
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="client_name">Client Name</label>
+                                                <input type="text" name="client_name" class="form-control" id="client_name" placeholder="Client Name"/>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="client_email">Client Email</label>
+                                                <input type="text" name="client_email" class="form-control" id="client_email" placeholder="Your Email" />
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="category">Category</label>
+                                                <input type="text" name="category" class="form-control" id="category" placeholder="Category"/>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="priority">Priority</label>
+                                                <input type="text" name="priority" class="form-control" id="priority" placeholder="low, high, etc." />
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </t>
+        </template>
+
+
+    </data>
+
+
+</odoo>
