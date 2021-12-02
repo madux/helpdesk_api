@@ -9,7 +9,11 @@
     'author': "Maach Softwares / Maduka Chris Sopulu",
     'category': 'Helpdesk',
     'summary': 'Helpdesk support application',
-    'depends': ['base', 'mail'],
+    'depends': [
+        'base', 
+        'mail',
+        'website'
+    ],
 
     'description': "Helpdesk support application",
     "data": [
@@ -19,6 +23,7 @@
             'sequence/sequence.xml',
             'views/helpdesk_ticket_view.xml',
             'views/dashboard_view.xml',
+            'views/helpdesk_templates.xml',
         ],
 
     'css': [],
