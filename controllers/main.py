@@ -66,6 +66,8 @@ class APIController(http.Controller):
             "status": "success"
         }
         data = request.httprequest.data.decode("utf8")
+        print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&", data)
+        print("_______________________________________", kw)
         HelpdeskTicket = request.env['helpdeskticket.model'].sudo()
         _logger.info("API DATA %s" % kw)
         # error_item = ["Error Found: "]
@@ -77,7 +79,7 @@ class APIController(http.Controller):
         try:
             vals = {
                 'description': kw.get("description"),
-                'category': kw.get("category"),
+                'category': int(kw.get("category")),
                 'client_email': kw.get("client_email"),
                 'client_name': kw.get("client_name"),
                 'active': True,
@@ -97,5 +99,6 @@ class APIController(http.Controller):
         
     @http.route("/helpdesk/ticket", type="http", website=True, auth="public", methods=["GET"], csrf=False)
     def home(self, **kw):
-        qcontext = {}
+        helpdesk_categories = request.env['helpdeskcategory.model'].sudo().search([])
+        qcontext = {"categories": helpdesk_categories}
         return request.render("helpdesk_api.helpdesk_ticket", qcontext=qcontext)

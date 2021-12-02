@@ -32,8 +32,7 @@
                                                 <div class="row">
                                                     <div class="col-lg-12">
                                                         <p>
-                                                            You can set the rate and value of transaction for your currency here. By filling the `Rate` field 
-                                                            you are setting the equivalent of the currency in Naira. For example if you do $1 for #360, set the rate to 360.
+                                                           Submit You Issues here
                                                         </p>
                                                     </div>
                                                 </div>
@@ -64,7 +63,11 @@
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
                                                 <label for="category">Category</label>
-                                                <input type="text" name="category" class="form-control" id="category" placeholder="Category"/>
+                                                <select name="category" class="form-control"> 
+                                                    <t t-foreach="categories" t-as="category">
+                                                        <option t-att-value="category.id"><t t-esc="category.name"/></option>
+                                                    </t>
+                                                </select>
                                             </div>
                                             <div class="form-group col-md-6">
                                                 <label for="priority">Priority</label>
