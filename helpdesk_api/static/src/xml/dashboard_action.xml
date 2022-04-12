@@ -1,0 +1,20 @@
+<odoo>
+
+
+
+    <record model="ir.actions.client" id="custom_dashboard_action_id">
+        <field name="name">Dashboard</field>
+        <field name="tag">custom_dashboard_tag</field>
+    </record>
+    <menuitem action="custom_dashboard_action_id" id="custom_dashboard_helpdesk_menu_id" parent="helpdesk_api.menu_helpdesk_ticket_issue_root" sequence="0"
+    name="Helpdesk Dashboard"/>
+
+    <template id="assets_dashboard" name="Dashboard Assets" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <script type="text/javascript" src="/helpdesk_api/static/src/js/dashboard.js"></script>
+            <link rel="stylesheet" href="/helpdesk_api/static/src/css/dashboard.css"/>
+            <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.js"></script> -->
+
+        </xpath>
+    </template>
+</odoo>

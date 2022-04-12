@@ -78,8 +78,9 @@ class APIController(http.Controller):
         #     return {"status": "failure", "message": ',\n'.join(error_item)}
         try:
             category_id = kw.get("category")
+            sla_id = int(kw.get("sla_ids")) if kw.get("sla_ids") else False
+            priority = kw.get("priority")
             category = request.env['helpdeskcategory.model'].sudo().search([("id", "=", int(category_id))], limit=1)
-            sla_id = category.sla_id
             vals = {
                 'description': kw.get("description"),
                 'category': int(kw.get("category")),
@@ -87,17 +88,16 @@ class APIController(http.Controller):
                 'client_name': kw.get("client_name"),
                 'note': kw.get("note"),
                 'active': True,
-                'sla_id': sla_id and sla_id.id,
-                'priority': kw.get("priority"),
+                'sla_id': sla_id,
+                'priority': "1" if priority == "low" else "2" if priority == "medium" else "3" if priority == "high" else "4" if priority == "urgent" else "0",
             }
             ticket = HelpdeskTicket.create(vals)
-            ticket.onchange_sla_id()
-            ticket.compute_ticket_deadline()
+            # ticket.compute_ticket_deadline()
             custombody = category.custom_html or category.auto_msgs or "No message"
             ticket.send_mail(
-                category.email, vals.get("client_email"), True, custombody, False)
+                category.email, vals.get("client_email"), custombody, False)
             http.Response.status = "201"
-            return """<h1> Submitted successfully
+            return """<h1> Issues Submitted successfully... Please expect our response
         </h1>"""
         except Exception as e:
             _logger.exception(e)
@@ -107,5 +107,6 @@ class APIController(http.Controller):
     @http.route("/helpdesk/ticket", type="http", website=True, auth="public", methods=["GET"], csrf=False)
     def home(self, **kw):
         helpdesk_categories = request.env['helpdeskcategory.model'].sudo().search([])
-        qcontext = {"categories": helpdesk_categories}
+        helpdesk_sla_ids = request.env['helpdesk.tracker.sla'].sudo().search([])
+        qcontext = {"categories": helpdesk_categories, 'sla_ids': helpdesk_sla_ids}
         return request.render("helpdesk_api.helpdesk_ticket", qcontext=qcontext)

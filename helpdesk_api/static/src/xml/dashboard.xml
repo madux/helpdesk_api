@@ -1,0 +1,181 @@
+<!-- <?xml version="1.0" encoding="UTF-8"?> -->
+<templates id="template" xml:space="preserve">
+    <!-- <t t-name="Dashboard">
+        <div class="oh_dashboards">
+            <div class="container-fluid o_pos_dashboard">
+                <h1>Hello world</h1>
+            </div>
+        </div>
+    </t> -->
+
+    <t t-name="Dashboard">
+
+        
+        <div class="row main-section">
+            <div class="col-md-4 col-sm-6 pos_order_today oh-payslip">
+                <div class="oh-card" style="width: 288px;">
+                    <div class="oh-card-body">
+                        <div class="stat-widget-one widget-1" title="My Tickets" name="helpdesk_api.helpdesk_my_ticket_action" search_view_ref='helpdesk_api.helpdesk_my_ticket_action'>
+                            <!--                                    <div class="stat-icon" style="background:#5bcbd0"><t t-esc="widget.today_sale"/></div>-->
+
+                            <div class="stat-icon" style="background:#5bcbd0">
+                                <!-- <a href="#" class="o_dashboard_action" name="helpdesk_api.helpdesk_my_ticket_action"> -->
+                                    <i class="fa fa-shopping-bag"/>
+                                <!-- </a> -->
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-head">My Tickets</div>
+                                <div class="stat_count">
+                                    <t t-esc="widget.create_user_ticket"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6 pos_order oh-payslip d-none">
+                <div class="oh-card" style="width: 288px;">
+                    <div class="oh-card-body">
+                        <div class="stat-widget-one widget-2">
+                            <!--                                                <div class="stat-icon" style="background:#645bd0"><t t-esc="widget.total_order_count"/></div>-->
+                            <div class="stat-icon" style="background:#645bd0">
+                                <i class="fa fa-signal"/>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-head">Customer Centered</div>
+                                <div class="stat_count">
+                                    <t t-esc="widget._get_customer_centered_tickets"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6 pos_total_sales oh-payslip d-none">
+                <div class="oh-card" style="width: 350px;">
+                    <div class="oh-card-body">
+                        <div class="stat-widget-one widget-3">
+                            <div class="stat-icon" style="background:#85d05b">
+                                <i class="fa fa-signal"/>
+                            </div>
+                            <!--                                                <div class="stat-icon" style="width:150px;background:##85d05b"><t t-esc="widget.total_sale"/></div>-->
+                            <div class="stat-content">
+                                <div class="stat-head">Issue Centered</div>
+                                <div class="stat_count">
+                                    <t t-esc="widget._get_issue_other_centered_tickets"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6 pos_session oh-payslip">
+                <div class="oh-card" style="width: 288px;">
+                    <div class="oh-card-body">
+                        <div class="stat-widget-one widget-4">
+                            <div class="stat-icon" style="background:#d05bb8">
+                                <i class="fa fa-signal"/>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-head">Closed Tickets</div>
+                                <div class="stat_count">
+                                     <t t-esc="widget._get_closed_tickets"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6 pos_refund_orders oh-payslip">
+                <div class="oh-card" style="width: 288px;">
+                    <div class="oh-card-body">
+                        <div class="stat-widget-one widget-5">
+                            <div class="stat-icon" style="background:#d0c35b">
+                                <i class="fa fa-minus-circle"/>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-head">Opened Tickets</div>
+                                <div class="stat_count">
+                                    <t t-esc="widget._get_opened_tickets"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-sm-6 pos_refund_today_orders oh-payslip">
+                <div class="oh-card" style="width: 350px;">
+                    <div class="oh-card-body">
+                        <div class="stat-widget-one widget-6">
+                            <div class="stat-icon" style="background:#5b8ed0">
+                                <i class="fa fa-minus-circle"/>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-head">Total Solved</div>
+                                <div class="stat_count">
+                                    <t t-esc="widget._get_solved_tickets"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6 pos_refund_today_orders oh-payslip d-none">
+                <div class="oh-card" style="width: 288px;">
+                    <div class="oh-card-body">
+                        <div class="stat-widget-one widget-7">
+                            <div class="stat-icon" style="background:#5b8ed0">
+                                <i class="fa fa-minus-circle"/>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-head">Unassigned</div>
+                                <div class="stat_count">
+                                    <t t-esc="widget._get_unassigned_tickets"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6 pos_refund_today_orders oh-payslip">
+                <div class="oh-card" style="width: 350px;">
+                    <div class="oh-card-body">
+                        <div class="stat-widget-one widget-8">
+                            <div class="stat-icon" style="background:#5b8ed0">
+                                <i class="fa fa-minus-circle"/>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-head">My Failed SLA(s)</div>
+                                <div class="stat_count">
+                                    <t t-esc="widget._get_failed_sla_tickets"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6 pos_refund_today_orders oh-payslip">
+                <div class="oh-card" style="width: 288px;">
+                    <div class="oh-card-body">
+                        <div class="stat-widget-one widget-9">
+                            <div class="stat-icon" style="background:#d05bb8">
+                                <i class="fa fa-minus-circle"/>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-head">Assigned To Me</div>
+                                <div class="stat_count">
+                                    <t t-esc="widget._get_my_tickets_tickets"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </t>
+</templates>

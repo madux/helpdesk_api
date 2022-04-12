@@ -32,7 +32,7 @@
                                                 <div class="row">
                                                     <div class="col-lg-12">
                                                         <p>
-                                                           Submit You Issues here
+                                                           Submit Your Issues here
                                                         </p>
                                                     </div>
                                                 </div>
@@ -42,7 +42,7 @@
                                     <form action="/api/v1/issues" method="post" enctype="multipart/form-data">
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
-                                                <label for="description">Description</label>
+                                                <label for="description">Subject</label>
                                                 <input type="text" name="description" class="form-control" id="description" placeholder="Description"/>
                                             </div>
                                             <div class="form-group col-md-6">
@@ -56,38 +56,52 @@
                                         </div>
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
-                                                <label for="client_name">Client Name</label>
-                                                <input type="text" name="client_name" class="form-control" id="client_name" placeholder="Client Name"/>
+                                                <label for="client_name">Name</label>
+                                                <input type="text" name="client_name" class="form-control" id="client_name" placeholder="Client Name" required="1"/>
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <label for="client_email">Client Email</label>
-                                                <input type="text" name="client_email" class="form-control" id="client_email" placeholder="Your Email" />
+                                                <label for="client_email">Email</label>
+                                                <input type="text" name="client_email" class="form-control" id="client_email" placeholder="Your Email" required="1" />
                                             </div>
                                         </div>
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
                                                 <label for="category">Category</label>
-                                                <select name="category" class="form-control"> 
+                                                <select name="category" class="form-control" required="1"> 
                                                     <t t-foreach="categories" t-as="category">
                                                         <option t-att-value="category.id"><t t-esc="category.name"/></option>
                                                     </t>
                                                 </select>
                                             </div>
                                             <div class="form-group col-md-6">
+                                                <label for="sla_ids">SLA</label>
+                                                <select name="sla_ids" class="form-control" required="1">
+                                                    <option value=""></option> 
+                                                    <t t-foreach="sla_ids" t-as="sla">
+                                                        <option t-att-value="sla.id"><t t-esc="sla.name"/></option>
+                                                    </t>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group col-md-6">
                                                 <label for="priority">Priority</label>
                                                 <select name="priority" class="form-control"> 
                                                     <option value="low">Low</option>
                                                     <option value="medium">Medium</option>
                                                     <option value="high">High</option>
+                                                    <option value="urgent">Urgent</option>
                                                 </select>
                                             </div>
                                         </div>
+
                                         <div class="form-group">
-                                            <label for="note">Note</label>
-                                            <textarea name="note" class="form-control" placeholder="notes..."></textarea>
+                                            <label for="note">Description</label>
+                                            <textarea name="note" class="form-control" placeholder="notes..." required="1"></textarea>
                                         </div>
                                         <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                        <center> <button type="submit" class="btn btn-primary">Submit</button></center>
+                                        <br/>
+                                        <br/>
                                     </form>
                                 </div>
                             </div>

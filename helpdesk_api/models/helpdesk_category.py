@@ -21,13 +21,13 @@ class HelpdeskDeskTracker(models.Model):
 	category_id = fields.Many2one('helpdeskcategory.model', 'Category', required=True)
 	stage_id = fields.Many2one(
 		'helpdeskstages.model', 'Target Stage', required=True,
-		help='Minimum stage a ticket needs to reach in order to satisfy this SLA.')
+		help='Minimum stage a ticket needs to reach in order to satisfy this SLA.', ondelete="cascade")
 	priority = fields.Selection(
 		TICKET_PRIORITY, string='Minimum Priority',
 		default='0', required=True,
 		help='Tickets under this priority will not be taken into account.')
 	company_id = fields.Many2one('res.company', 'Company', readonly=True, store=True)
-	response = fields.Integer('Repsonse time(hours)', default=0, required=False, help="Days to reach given stage based on ticket creation date")
+	response = fields.Integer('Response time(hours)', default=1, required=False)
 	time_days = fields.Integer('Days', default=0, required=True, help="Days to reach given stage based on ticket creation date")
 	time_hours = fields.Integer('Hours', default=0, required=True, help="Hours to reach given stage based on ticket creation date")
 
@@ -53,6 +53,7 @@ class TicketCategory(models.Model):
 	custom_html = fields.Text('Custom Message', required=False, size=100, help="Default message to send as mail when ticket moves from stages to another")
 	use_sla = fields.Boolean('SLA Policies')
 	sla_id = fields.Many2one('helpdesk.tracker.sla', string="SLA")
+	company_id = fields.Many2one('res.company', 'Company', store=True)
 
 	@api.model
 	def create(self, vals):

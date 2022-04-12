@@ -1,27 +1,31 @@
-<odoo>
+<odoo> 
+
     <record id="helpdeskticket_model_configs_kanban_action" model="ir.actions.act_window">
-            <field name="name">Helpdesk ticket</field>
-            <field name="res_model">helpdeskticket.model</field>
-            <field name="type">ir.actions.act_window</field>
-            <!-- <field name="view_type">form</field> -->
-            <field name="view_mode">kanban</field>
-            <field name="help" type="html">
-              <p class="oe_view_nocontent_create">
-                Click to create a ticket.
-              </p><p>
-                Create Ticket to allow you keep track of issues
-              </p>
-            </field>
-        </record>
+        <field name="name">Ticket</field>
+        <field name="res_model">helpdeskticket.model</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="context">{'search_default_issue_company_id': 1}</field>
+        <!-- <field name="view_type">form</field> -->
+        <field name="view_mode">kanban</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+            Click to create a ticket.
+            </p><p>
+            Create Ticket to allow you keep track of issues
+            </p>
+        </field>
+    </record>
 
-        <menuitem
-            action="helpdeskticket_model_configs_kanban_action"
-            id="helpdeskticket_model_configs_dashboard_menu"
-            parent="helpdesk_api.menu_helpdesk_ticket_issue_root" sequence="1"
-            name="Dashboard"/>
+    <!-- <menuitem
+        action="helpdeskticket_model_configs_kanban_action"
+        id="helpdeskticket_model_configs_dashboard_menu"
+        parent="helpdesk_api.menu_helpdesk_ticket_issue_root" sequence="1"
+        name="Dashboard"/> -->
 
-        <record id="helpdeskticket_model_dashboard_kanban_view" model="ir.ui.view">
-        <field name="name">helpdeskticket.model.kanban</field>
+    
+
+    <record id="helpdeskticket_model_dashboard_kanban_view" model="ir.ui.view">
+    <field name="name">helpdeskticket.model.kanban</field>
         <field name="model">helpdeskticket.model</field>
         <field name="arch" type="xml">
             <kanban class="oe_background_grey o_kanban_dashboard o_stock_kanban" create="0">
