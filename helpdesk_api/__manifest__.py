@@ -5,11 +5,15 @@
 
 {
     'name': 'Helpdesk Issue Tracker',
-    'version': '1.5',
-    'author': "Maduka Chris Sopulu",
+    'version': '14.0',
+    'author': "Maach Softwares / Maduka Chris Sopulu",
     'category': 'Helpdesk',
     'summary': 'Helpdesk support application',
-    'depends': ['base', 'mail'],
+    'depends': [
+        'base', 
+        'mail',
+        'website'
+    ],
 
     'description': "Helpdesk support application",
     "data": [
@@ -19,6 +23,7 @@
             'sequence/sequence.xml',
             'views/helpdesk_ticket_view.xml',
             'views/dashboard_view.xml',
+            'views/helpdesk_templates.xml',
         ],
 
     'css': [],
@@ -27,6 +32,7 @@
 
     ],
     "active": False,
+    "images": ['images/main_cover.jpg'],
     'application': True,
-    "sequence": 3
+    "sequence": 3,
 }

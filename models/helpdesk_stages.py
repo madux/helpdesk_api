@@ -10,7 +10,7 @@ class TicketStages(models.Model):
     name = fields.Char(string="Description")
     sequence = fields.Integer('sequence', size=100, required=True)
     active = fields.Boolean(string="Active", default=True)
-    apply_on = fields.Many2many('helpdeskcategory.model', string="Apply to", required=True)
+    apply_on = fields.Many2many('helpdeskcategory.model', string="Apply to", required=False)
     is_close = fields.Boolean(string="Is closed?",)
 
     # @api.multi

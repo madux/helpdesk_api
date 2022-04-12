@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record model="helpdeskstages.model" id="new_stage_id">
+            <field name="name">New</field>
+            <field name="active">True</field>
+            <field name="sequence">1</field>
+
+        </record>
+        <record model="helpdeskstages.model" id="progress_stage_id">
+            <field name="name">In Progress</field>
+            <field name="active">True</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <record model="helpdeskstages.model" id="review_stage_id">
+            <field name="name">In Review</field>
+            <field name="active">True</field>
+            <field name="sequence">3</field>
+
+        </record>
+
+        <record model="helpdeskstages.model" id="solved_stage_id">
+            <field name="name">Solved</field>
+            <field name="active">True</field>
+            <field name="sequence">4</field>
+
+        </record>
+
+        <record model="helpdeskstages.model" id="closed_stage_id">
+            <field name="name">Closed</field>
+            <field name="active">True</field>
+            <field name="sequence">5</field>
+
+        </record>
+
+        <record model="helpdeskcategory.model" id="email_category">
+            <field name="name">Email</field>
+            <field name="active">True</field>
+
+        </record>
+
+    </data>
+</odoo>
+ 
