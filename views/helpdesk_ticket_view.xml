@@ -63,6 +63,7 @@
                             <field name="name"/>
                             <field name="user_ids" widget="many2many_tags"/>
                             <field name="code"/>
+                            <field name="company_id" required="1"/>
                             <field name="use_sla"/>
                             <field name="sla_id"/>
                         </group>
@@ -110,7 +111,7 @@
                         </group>
                         <group>
                             <field name="priority" widget="radio"/>
-                            <field name="company_id"/>
+                            <field name="company_id" required="1" readonly="0"/>
                             <field name="response"/>
                             <field name="time_days"/>
                             <field name="time_hours"/>
@@ -208,8 +209,8 @@
         <field name="model">helpdeskticket.model</field>
         <field name="arch" type="xml">
             <pivot string="Helpdesk Tickets">
-                <field name="create_date" type="row" interval="day"/>
-                <field name="assigned_user" type="col"/>
+                <field name="stage_id" type="col"/>
+                <field name="assigned_user" type="row"/>
             </pivot>
         </field>
     </record>
@@ -222,14 +223,19 @@
             <search string="Tickets Search">
                 <field name="description"/>
                 <field name="name" string="Ticket ID"/>
+                <field name="company_id"/>
                 <field name="assigned_user"/>
                 <field name="stage_id"/>
                 <field name="category"/>
                 <field name="client_email"/>
                 <field name="priority"/>
                 <field name="expected_date" force_save="1"/>
-                <filter string="My Tickets" domain="[('assigned_user','=',uid)]" name="my_ticket"/>
+                <filter string="All my Tickets" domain="[('create_uid','=',uid)]" name="my_ticket"/>
+                <filter string="My Assigned Tickets" domain="[('assigned_user','=',uid)]" name="my_assigned_ticket"/>
                 <filter string="Unassigned Tickets" domain="[('assigned_user','=',False)]" name="unassigned"/>
+                <filter string="All customer centered" domain="[('ticket_type', '=', 'customer')]" name="all_customer_centered" invisible="1"/>
+                <filter string="All Issue centered" domain="[('ticket_type', '=',['other', 'issue'])]" name="all_issue_centered" invisible="1"/>
+                 
                 <separator/>
                 <filter string="Open Tickets" domain="[('close_ticket','=',False)]" name="is_open"/>
                 <filter string="Closed Tickets" domain="[('close_ticket','=',True)]" name="is_close"/>
@@ -245,12 +251,149 @@
                         ]"/>
                 <group expand="0" string="Group By">
                     <filter string="Assignee" name="issue_assignee" context="{'group_by':'assigned_user'}"/>
+                    <filter string="Company" name="issue_company_id" context="{'group_by':'company_id'}"/>
                     <filter string="Category" name="issue_category" context="{'group_by':'category'}"/>
                     <filter string="Stage" name="issue_stage" context="{'group_by':'stage_id'}"/>
                 </group>
             </search>
         </field>
     </record>
+
+    <record id="helpdesk_my_ticket_action" model="ir.actions.act_window">
+        <field name="name">My Tickets</field>
+        <field name="res_model">helpdeskticket.model</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('create_uid','=',uid)]</field>
+        <field name="context">{'create': False, 'search_default_my_ticket': True}</field>
+        <field name="search_view_id" ref="helpdesk_api.helpdeskticket_model_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                My tickets
+                </p><p>
+            </p>
+        </field>
+    </record>
+
+    <record id="helpdesk_customer_centered_ticket_action" model="ir.actions.act_window">
+        <field name="name">Customer centered Tickets</field>
+        <field name="res_model">helpdeskticket.model</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('ticket_type', '=', 'customer')]</field>
+        <field name="context">{'create': False, 'search_default_all_customer_centered': True}</field>
+        <field name="search_view_id" ref="helpdesk_api.helpdeskticket_model_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Customer centered Tickets
+                </p><p>
+            </p>
+        </field>
+    </record> 
+
+    <record id="helpdesk_issue_centered_ticket_action" model="ir.actions.act_window">
+        <field name="name">Other centered Tickets</field>
+        <field name="res_model">helpdeskticket.model</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('ticket_type', 'in', ['other', 'issue'])]</field>
+        <field name="context">{'create': False, 'search_default_all_issue_centered': True}</field>
+        <field name="search_view_id" ref="helpdesk_api.helpdeskticket_model_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Issue centered Tickets
+                </p><p>
+            </p>
+        </field>
+    </record>
+
+    <record id="helpdesk_closed_ticket_action" model="ir.actions.act_window">
+        <field name="name">Closed Tickets</field>
+        <field name="res_model">helpdeskticket.model</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('create_uid','=',uid),('close_ticket', '=', True)]</field>
+        <!-- <field name="context">{'create': False, 'search_default_is_close': True}</field> -->
+        <field name="search_view_id" ref="helpdesk_api.helpdeskticket_model_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Closed- Tickets
+                </p><p>
+            </p>
+        </field>
+    </record>
+
+    <record id="helpdesk_opened_ticket_action" model="ir.actions.act_window">
+        <field name="name">Opened Tickets</field>
+        <field name="res_model">helpdeskticket.model</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('create_uid','=',uid),('close_ticket', '=', False)]</field>
+        <field name="context">{'create': False, 'search_default_is_open': True}</field>
+        <field name="search_view_id" ref="helpdesk_api.helpdeskticket_model_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Opened Tickets
+                </p><p>
+            </p>
+        </field>
+    </record>
+    <record id="helpdesk_solved_ticket_action" model="ir.actions.act_window">
+        <field name="name">Solved Tickets</field>
+        <field name="res_model">helpdeskticket.model</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('create_uid','=',uid),('close_ticket', '=', True), ('sla_failed', '=', False)]</field>
+        <!-- <field name="context">{'create': False, 'search_default_is_close': True}</field> -->
+        <field name="search_view_id" ref="helpdesk_api.helpdeskticket_model_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Solved Tickets
+                </p><p>
+            </p>
+        </field>
+    </record>
+
+    <record id="helpdesk_unassigned_ticket_action" model="ir.actions.act_window">
+        <field name="name">Unassigned Tickets</field>
+        <field name="res_model">helpdeskticket.model</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">['|', ('unassigned', '=', False),('assigned_user','!=',uid)]</field>
+        <field name="context">{'create': False, 'search_default_unassigned': True}</field>
+        <field name="search_view_id" ref="helpdesk_api.helpdeskticket_model_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Unassigned Tickets
+                </p><p>
+            </p>
+        </field>
+    </record>
+
+    <record id="helpdesk_failed_sla_ticket_action" model="ir.actions.act_window">
+        <field name="name">Failed SLA Tickets</field>
+        <field name="res_model">helpdeskticket.model</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('create_uid','=',uid),('close_ticket', '=', False), ('sla_failed', '=', True)]</field>
+        <!-- <field name="context">{'create': False, 'search_default_is_open': True}</field> -->
+        <field name="search_view_id" ref="helpdesk_api.helpdeskticket_model_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                My Failed Tickets
+                </p><p>
+            </p>
+        </field>
+    </record>
+
+    <record id="helpdesk_assigned_ticket_action" model="ir.actions.act_window">
+        <field name="name">Assigned Tickets</field>
+        <field name="res_model">helpdeskticket.model</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('assigned_user','=',uid)]</field>
+        <field name="context">{'create': False, 'search_default_my_assigned_ticket': True}</field>
+        <field name="search_view_id" ref="helpdesk_api.helpdeskticket_model_view_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Assigned Tickets
+                </p><p>
+            </p>
+        </field>
+    </record>
+
+     
     
     <record id="helpdesktickets_view_tree" model="ir.ui.view">
         <field name="name">helpdeskticket.tree</field>
@@ -258,14 +401,19 @@
         <field name="arch" type="xml">
             <tree string="Tickets">
                 <field name="name"/>
-                <field name="client_name"/>
+                <field name="company_id"/>
+                <field name="partner_id" attrs="{'invisible': [('ticket_type', '!=', 'customer')]}" string="Partner"/>
+                 <field name="client_name" attrs="{'invisible': [('ticket_type', '=', 'customer')]}"/>
+                <field name="ticket_type" invisible="1"/>
                 <field name="client_email"/>
                 <field name="assigned_user"/>
-                <field name="stage_id"/>
+                <field name="stage_id" string="Status"/>
                 <field name="priority"/>
                 <field name="category"/> 
                 <field name="close_ticket" string="Is Closed?"/> 
-                <field name="duration" string="Duration (Days)"/>
+                <field name="sla_failed" invisible="0"/>
+                <field name="diff_failed_sla_duration" string="Escalation (Days)"/>
+                <field name="expected_date"/>
             </tree>
         </field>
     </record>
@@ -277,49 +425,63 @@
         <field name="arch" type="xml">
             <form string="Helpdesk Ticket">
                 <header> 
-                    <button name="assign_issue" string="Assign To Me" type="object" class="oe_highlight" groups="helpdesk_api.group_helpdesk_issue_user,helpdesk_api.group_helpdesk_issue_manager"/>
-                    <button name="send_by_mail_button" string="Send by mail" type="object" class="oe_highlight" groups="helpdesk_api.group_helpdesk_issue_user,helpdesk_api.group_helpdesk_issue_manager"/>
+                    <button name="action_submit" string="Submit" type="object" class="oe_highlight" attrs="{'invisible': [('status', '!=', 'new')]}" confirm="Are you sure you want to submit" groups="helpdesk_api.group_helpdesk_issue_user"/>
+                    <button name="assign_issue" string="Assign To Me" type="object" class="oe_highlight" groups="helpdesk_api.group_helpdesk_issue_manager"/>
+                    <button name="send_by_mail_button" string="Send by mail" type="object" class="oe_highlight" groups="helpdesk_api.group_helpdesk_issue_manager"/>
                     <field name="stage_id" widget="statusbar" readonly="0" options="{'clickable': '1'}"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button class="oe_stat_button" name="all_my_tickets" icon="fa-ticket"
-                            type="object">
+                        <button class="oe_stat_button" name="all_my_tickets" icon="fa-ticket" type="object">
                             <field name="num_tickets" string="My Tickets" widget="statinfo" />
                         </button>
                          
-                        <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                        <button name="toggle_active" string="Activate" type="object" class="oe_stat_button" icon="fa-archive" confirm="Do you want to archive or unarchive?">
                             <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
                         </button>
                         <button name="toggle_close_ticket_action" string="Close / Open" confirm="Are you sure you want to close or open?" type="object" class="oe_stat_button" icon="fa-window-close">
                         </button>
                     </div>
-                    <div class="oe_title">
-                        <h1><field name="description" placeholder="Description..." required="1"/></h1>
+                    <label for="description"/>
+                    
+                    <div class="oe_title"><br/>
+                        <h1><field name="description" placeholder="Description..." required="1" attrs="{'readonly': [('status', '!=', 'new')]}"/></h1>
                     </div>
                     <group>
                         <group>
                             <field name="name" readonly="1" string ="Ticket #"/>
-                            <field name="ticket_type" required="1" string="Ticket Type"/>
-                            <field name="partner_id" string="Customer" attrs="{'invisible': [('ticket_type', '!=', 'customer')], 'required': [('ticket_type', '=', 'customer')]}"/>
-                            <field name="client_name" attrs="{'invisible': [('ticket_type', '=', 'customer')], 'required': [('ticket_type', '!=', 'customer')]}"/>
-                            <field name="client_email" attrs="{'invisible': [('ticket_type', '=', 'customer')], 'required': [('ticket_type', '!=', 'customer')]}"/>
-                            <field name="category" options="{'no_create': True}"/>
+                            <field name="ticket_type" required="1" string="Ticket Type" attrs="{'readonly': [('status', '!=', 'new')]}"/>
+                            <field name="partner_id" string="Client" options="{'no_create': True, 'no_open': True}" attrs="{'invisible': [('ticket_type', '!=', 'customer')], 'readonly': [('status', '!=', 'new')], 'required': [('ticket_type', '=', 'customer')]}"/>
+                            <field name="client_name" attrs="{'readonly': [('status', '!=', 'new')],'invisible': [('ticket_type', '=', 'customer')], 'required': [('ticket_type', '!=', 'customer')]}"/>
+                            <field name="client_email" attrs="{'readonly': [('status', '!=', 'new')]}"/>
+                            <field name="company_id" attrs="{'readonly': [('status', '!=', 'new')],'required': [('ticket_type', '=', 'customer')]}" force_save="1" options="{'no_create': True, 'no_open': True}" />
+                            <field name="category" required="1"  attrs="{'readonly': [('status', '!=', 'new')]}" options="{'no_create': True, 'no_open': True}"/>
+                            <p style="color:Teal;">Contact User with Manager access to assign to another user.</p>
+                            <field name="assigned_user" options="{'no_create': True, 'no_open': True}" groups="helpdesk_api.group_helpdesk_super_user,helpdesk_api.group_helpdesk_issue_manager"/>
                         </group>
                         <group>
-                            <field name="priority"/>
-                            <field name="sla_id" options="{'no_create': True}"/>
-                            <field name="sla_duration" options="{'no_create': True}"/>
+                            <field name="priority" attrs="{'invisible': [('company_id', '=', False)],'readonly': [('status', '!=', 'new')]}"/>
+                            <field name="sla_id" options="{'no_create': True, 'no_open': True}" attrs="{'invisible': [('company_id', '=', False)],'readonly': [('status', '!=', 'new')]}"/>
+                            <!-- <field name="sla_duration" options="{'no_create': True}"/> -->
                              <!-- widget="priority"/> -->
+                            <field name="submitted_date" string="Date of Submission" readonly="1" invisible="0" force_save="1"/>
                             <field name="expected_date" readonly="1" force_save="1"/>
-                            <field name="write_ids" widget="many2many_tags" readonly="1"/>
-                            <field name="duration"/>
-                            <field name="assigned_user"/>
+                            <field name="status" invisible="1" force_save="1"/>
+                            <field name="write_ids" widget="many2many_tags" readonly="1" invisible="0" force_save="1" options="{'no_create': True, 'no_open': True}"/>
+                            <field name="file_name" invisible="1"/>
+                            <field name="file" filename="file_name" string="Upload document"/>
+                            <field name="sla_failed" invisible="0"/>
+                            <field name="close_ticket" string="Is Closed?" readonly="1" force_save="1"/> 
 
                         </group>
-                    </group>
-                    <field name="note" class="field_description" placeholder="Provide description for this ticket..." required="1"/>
+                    </group> 
                     <notebook>
+                        <page string="Note">
+                            <field name="note" class="field_description" placeholder="Provide description for this ticket..." required="1" attrs="{'readonly': [('status', '!=', 'new')]}"/>
+                        </page>
+                        <page string="Comments">
+                            <field name="comment" class="field_description" placeholder="Provide description..." required="0"/>
+                        </page>
                         <page string="Emails Logs">
                             <field name = "email_logs">
                                 <tree string="Mails">
@@ -330,7 +492,7 @@
                                     <field name = "state" string="Status"/>
                                 </tree>
                             </field>
-                        </page>
+                        </page> 
                     </notebook> 
 
                 </sheet>
@@ -356,11 +518,23 @@
             </p>
         </field>
     </record> -->
+    <record model="ir.ui.view" id="view_helpdeskticket_model_graph">
+        <field name="name">helpdeskticket.model.graph</field>
+        <field name="model">helpdeskticket.model</field>
+        <field name="arch" type="xml">
+            <graph string="Helpdesk Tickets" type="bar" stacked="True">
+                <!--<field name="create_date" type="row" interval="day"/>-->
+                <field name="stage_id" type="col"/>
+                <field name="assigned_user" type="row"/>
+            </graph>
+        </field>
+    </record>
 
     <record id="helpdeskticket_model_action_main1" model="ir.actions.act_window">
         <field name="name">All Tickets</field>
         <field name="res_model">helpdeskticket.model</field>
-        <field name="view_mode">tree,form,kanban,pivot</field>
+        <field name="view_mode">tree,form,kanban,pivot,graph</field>
+        <field name="context">{'search_default_issue_company_id': 1}</field>
         <field name="help" type="html">
           <p class="o_view_nocontent_smiling_face">
             Create your first ticket.
@@ -374,7 +548,7 @@
         sequence="2" parent="helpdesk_api.menu_helpdesk_ticket_issue_root"
         groups="helpdesk_api.group_helpdesk_issue_user,helpdesk_api.group_helpdesk_issue_manager"/>
 
-    <menuitem id="helpdesk_ticket_issue_menu_2" name="Create Tickets"
+    <menuitem id="helpdesk_ticket_issue_menu_2" name="View / Create Tickets"
         sequence="1" parent="helpdesk_ticket_issue_menu_main"
         groups="helpdesk_api.group_helpdesk_issue_user,helpdesk_api.group_helpdesk_issue_manager" action="helpdesk_api.helpdeskticket_model_action_main1"/>
 

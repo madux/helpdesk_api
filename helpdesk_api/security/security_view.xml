@@ -28,7 +28,7 @@
         <record id="helpdesk_issue_user_rule" model="ir.rule">
             <field name="name">Issue User</field>
             <field name="model_id" ref="helpdesk_api.model_helpdeskticket_model"/>
-            <field name="domain_force">['|', '|', ('assigned_user', '=', user.id), ('assigned_user','=', False), ('create_uid', '=', user.id)]</field>
+            <field name="domain_force">['|', ('assigned_user', '=', user.id), ('create_uid', '=', user.id)]</field>
             <field name="groups" eval="[(4, ref('helpdesk_api.group_helpdesk_issue_user'))]"/>
         </record>
 

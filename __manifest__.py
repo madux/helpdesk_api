@@ -23,13 +23,15 @@
             'sequence/sequence.xml',
             'views/helpdesk_ticket_view.xml',
             'views/dashboard_view.xml',
+            'data/data.xml',
             'views/helpdesk_templates.xml',
+            'static/src/xml/dashboard_action.xml',
         ],
 
     'css': [],
     'js': [],
     'qweb': [
-
+        'static/src/xml/dashboard.xml',
     ],
     "active": False,
     "images": ['images/main_cover.jpg'],

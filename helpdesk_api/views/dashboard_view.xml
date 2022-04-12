@@ -1,6 +1,6 @@
 <odoo>
     <record id="helpdeskticket_model_configs_kanban_action" model="ir.actions.act_window">
-            <field name="name">helpdeskticket.model</field>
+            <field name="name">Helpdesk ticket</field>
             <field name="res_model">helpdeskticket.model</field>
             <field name="type">ir.actions.act_window</field>
             <!-- <field name="view_type">form</field> -->

@@ -246,6 +246,7 @@
                 <group expand="0" string="Group By">
                     <filter string="Assignee" name="issue_assignee" context="{'group_by':'assigned_user'}"/>
                     <filter string="Category" name="issue_category" context="{'group_by':'category'}"/>
+                    <filter string="Company" name="issue_company_id" context="{'group_by':'company_id'}"/>
                     <filter string="Stage" name="issue_stage" context="{'group_by':'stage_id'}"/>
                 </group>
             </search>
