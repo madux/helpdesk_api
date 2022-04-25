@@ -77,28 +77,30 @@ class APIController(http.Controller):
         #     http.Response.status = "400"
         #     return {"status": "failure", "message": ',\n'.join(error_item)}
         try:
-            category_id = kw.get("category")
+            category_id = kw.get("category") or None
             sla_id = int(kw.get("sla_ids")) if kw.get("sla_ids") else False
             priority = kw.get("priority")
-            category = request.env['helpdeskcategory.model'].sudo().search([("id", "=", int(category_id))], limit=1)
+            category = request.env['helpdeskcategory.model'].sudo().search([("id", "=", category_id)], limit=1)
             vals = {
                 'description': kw.get("description"),
-                'category': int(kw.get("category")),
+                # 'category': int(kw.get("category")),
                 'client_email': kw.get("client_email"),
+                'ticket_type': 'issue',
                 'client_name': kw.get("client_name"),
                 'note': kw.get("note"),
                 'active': True,
-                'sla_id': sla_id,
+                # 'sla_id': sla_id,
                 'priority': "1" if priority == "low" else "2" if priority == "medium" else "3" if priority == "high" else "4" if priority == "urgent" else "0",
             }
             ticket = HelpdeskTicket.create(vals)
             # ticket.compute_ticket_deadline()
-            custombody = category.custom_html or category.auto_msgs or "No message"
+            custombody = category.custom_html or category.auto_msgs or "Ticket successfully submmitted. Our team will act on this shortly"
             ticket.send_mail(
                 category.email, vals.get("client_email"), custombody, False)
             http.Response.status = "201"
             return """<h1> Issues Submitted successfully... Please expect our response
         </h1>"""
+            # return request.render("helpdesk_api.helpdesk_successful_template", qcontext= {'id':ticket})
         except Exception as e:
             _logger.exception(e)
             http.Response.status = "400"

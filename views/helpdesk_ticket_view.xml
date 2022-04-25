@@ -452,15 +452,15 @@
                             <field name="name" readonly="1" string ="Ticket #"/>
                             <field name="ticket_type" required="1" string="Ticket Type" attrs="{'readonly': [('status', '!=', 'new')]}"/>
                             <field name="partner_id" string="Client" options="{'no_create': True, 'no_open': True}" attrs="{'invisible': [('ticket_type', '!=', 'customer')], 'readonly': [('status', '!=', 'new')], 'required': [('ticket_type', '=', 'customer')]}"/>
-                            <field name="client_name" attrs="{'readonly': [('status', '!=', 'new')],'invisible': [('ticket_type', '=', 'customer')], 'required': [('ticket_type', '!=', 'customer')]}"/>
-                            <field name="client_email" attrs="{'readonly': [('status', '!=', 'new')]}"/>
+                            <field name="client_name" required = "1" attrs="{'readonly': [('status', '!=', 'new')],'invisible': [('ticket_type', '=', 'customer')]}"/>
+                            <field name="client_email" required = "1" attrs="{'readonly': [('status', '!=', 'new')]}"/>
                             <field name="company_id" attrs="{'readonly': [('status', '!=', 'new')],'required': [('ticket_type', '=', 'customer')]}" force_save="1" options="{'no_create': True, 'no_open': True}" />
-                            <field name="category" required="1"  attrs="{'readonly': [('status', '!=', 'new')]}" options="{'no_create': True, 'no_open': True}"/>
-                            <p style="color:Teal;">Contact User with Manager access to assign to another user.</p>
+                            <field name="category" attrs="{'readonly': [('status', '!=', 'new')], 'required': [('ticket_type', '=', 'customer')]}" options="{'no_create': True, 'no_open': True}"/>
+                            <p style="color:Teal;">Contact User with Manager access to assign to another user...</p>
                             <field name="assigned_user" options="{'no_create': True, 'no_open': True}" groups="helpdesk_api.group_helpdesk_super_user,helpdesk_api.group_helpdesk_issue_manager"/>
                         </group>
                         <group>
-                            <field name="priority" attrs="{'invisible': [('company_id', '=', False)],'readonly': [('status', '!=', 'new')]}"/>
+                            <field name="priority" attrs="{'readonly': [('status', '!=', 'new')]}"/>
                             <field name="sla_id" options="{'no_create': True, 'no_open': True}" attrs="{'invisible': [('company_id', '=', False)],'readonly': [('status', '!=', 'new')]}"/>
                             <!-- <field name="sla_duration" options="{'no_create': True}"/> -->
                              <!-- widget="priority"/> -->

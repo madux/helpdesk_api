@@ -174,7 +174,7 @@ class TicketModel(models.Model):
     note = fields.Html(string="Notes")
     comment = fields.Html(string="Internal Note")
     assigned_user = fields.Many2one('res.users', string="Assigned To?")
-    client_email = fields.Char(string="Client Email", related="partner_id.email", store=True)
+    client_email = fields.Char(string="Client Email", store=True)
     client_name = fields.Char(string="Client Name")
     company_id = fields.Many2one('res.company', string="Company", domain=lambda self: self._domain_get_user_companies())
     partner_id = fields.Many2one("res.partner", string="Customer", required=False, default = lambda rec: rec.env.user.partner_id.id)
@@ -191,7 +191,7 @@ class TicketModel(models.Model):
 
     ticket_type = fields.Selection([('customer', 'Customer Centered'), ('issue', 'Issue'), ('other', 'Others')], default='customer', string="Ticket Type")
     priority = fields.Selection(
-        TICKET_PRIORITY, string='Priority', required=True,
+        TICKET_PRIORITY, string='Priority',
         help='Tickets under this priority will not be taken into account.')
     status = fields.Selection([('new', 'New'), ('open', 'Open'), ('close', 'Closed')], default='new', string="Status")
     submitted_date = fields.Datetime(string='Submitted Date')
@@ -208,7 +208,7 @@ class TicketModel(models.Model):
     def create(self, vals):
         sequence = self.env['ir.sequence'].next_by_code('helpdeskticket.model')
         last_create_ticket = self.env['helpdeskticket.model'].search([])
-        ticketid= f'TIC00000 {str(last_create_ticket[-1].id)}' if last_create_ticket else 'TIC000001'
+        ticketid= f'TIC00000 {str(last_create_ticket[-1].id)}' if last_create_ticket else f'TIC00000{self.id}'
         vals['name'] = sequence or ticketid
         return super(TicketModel, self).create(vals)
         
@@ -229,8 +229,9 @@ class TicketModel(models.Model):
     @api.onchange('partner_id')
     def onchange_partner_id(self):
         for rec in self:
-            if rec.partner_id:
+            if rec.partner_id and rec.ticket_type != "issue":
                 rec.client_email = rec.partner_id.email 
+                rec.client_name = rec.partner_id.name 
 
     @api.onchange('priority')
     def onchange_priority(self):
@@ -288,6 +289,16 @@ class TicketModel(models.Model):
                 rec.write_ids = [(4, usr.id) for usr in rec.category.mapped('user_ids')]
             else:
                 rec.write_ids = False 
+
+    @api.onchange('ticket_type')
+    def compute_ticket_type(self):
+        for rec in self:
+            if rec.ticket_type and rec.ticket_type in ["issue"]:
+                rec.client_email = False
+                rec.client_name = False
+                rec.partner_id = False
+                rec.category = False
+                rec.company_id = False
 
     @api.onchange('assigned_user')
     def onchange_assigned_user(self):

@@ -48,9 +48,9 @@
                                             <div class="form-group col-md-6">
                                                 <label for="ticket_type">Ticket Type</label>
                                                 <select name="ticket_type" class="form-control"> 
-                                                    <option value="customer">Customer</option>
+                                                    <!-- <option value="customer">Customer</option> -->
                                                     <option value="issue">Issue</option>
-                                                    <option value="other">Other</option>
+                                                    <!-- <option value="other">Other</option> -->
                                                 </select>
                                             </div>
                                         </div>
@@ -65,7 +65,7 @@
                                             </div>
                                         </div>
                                         <div class="form-row">
-                                            <div class="form-group col-md-6">
+                                            <!-- <div class="form-group col-md-6">
                                                 <label for="category">Category</label>
                                                 <select name="category" class="form-control" required="1"> 
                                                     <t t-foreach="categories" t-as="category">
@@ -81,7 +81,7 @@
                                                         <option t-att-value="sla.id"><t t-esc="sla.name"/></option>
                                                     </t>
                                                 </select>
-                                            </div>
+                                            </div> -->
 
                                             <div class="form-group col-md-6">
                                                 <label for="priority">Priority</label>
@@ -111,7 +111,20 @@
             </t>
         </template>
 
-
+        <!-- Succes page -->
+        <template id="helpdesk_successful_template" name="Success Page">
+            <t t-name="eha_website.helpdesk_successful_template">
+                <t t-call="website.layout">
+                    <div id="wrap" class="oe_structure oe_empty"/>
+                    <div class="section bgLight pt-4">
+                        <div class="container pt-5 pb-4">
+                            <h3>Issues Submitted successfully... Please expect our response.</h3>
+                            <p class="text-lg pt-4"> Please expect our response.</p>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
     </data>
 
 
