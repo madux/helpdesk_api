@@ -97,6 +97,7 @@ class APIController(http.Controller):
             custombody = category.custom_html or category.auto_msgs or "Ticket successfully submmitted. Our team will act on this shortly"
             ticket.send_mail(
                 category.email, vals.get("client_email"), custombody, False)
+            ticket.action_submit()
             http.Response.status = "201"
             return """<h1> Issues Submitted successfully... Please expect our response
         </h1>"""
