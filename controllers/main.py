@@ -25,7 +25,6 @@ class APIController(http.Controller):
                 error_item.append("Customer Name must be provided\n ")
         if not category_id:
             error_item.append("Ticket Category must be provided\n ")
-
         else:
             if type(category_id) not in [int]:
                 error_item.append("Category Value must be an integer\n ")
