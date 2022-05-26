@@ -42,23 +42,23 @@ class APIController(http.Controller):
             "status": "success"
         }
         helpdesk_categories = request.env['helpdeskcategory.model'].sudo().search([])
-        http.Response.status = "201"
+        # http.Response.status = "201"
         return {
             "status": "successful",
             "ticket_data": [{'id': category.id, 'ticket_id': category.name} for category in helpdesk_categories]
         }
 
-    @http.route("/api/v1/issues", type="http", auth="public", methods=["GET"], csrf=False)
-    def get_issue(self, **kw):
-        response = {
-            "status": "success"
-        }
-        helpdesk_tickets = request.env['helpdeskticket.model'].sudo().search([])
-        http.Response.status = "201"
-        return {
-            "status": "successful",
-            "ticket_data": [{'id': ticket.id, 'ticket_id': ticket.name, 'client_email': ticket.client_email} for ticket in helpdesk_tickets]
-        }
+    # @http.route("/api/v1/issues", type="http", auth="public", methods=["GET"], csrf=False)
+    # def get_issue(self, **kw):
+    #     response = {
+    #         "status": "success"
+    #     }
+    #     helpdesk_tickets = request.env['helpdeskticket.model'].sudo().search([])
+    #     http.Response.status = "201"
+    #     return {
+    #         "status": "successful",
+    #         "ticket_data": [{'id': ticket.id, 'ticket_id': ticket.name, 'client_email': ticket.client_email} for ticket in helpdesk_tickets]
+    #     }
 
     @http.route("/api/v1/issues", type="http", auth="public", methods=["POST"], csrf=False)
     def create_issue(self, **kw):
@@ -96,12 +96,12 @@ class APIController(http.Controller):
             custombody = category.custom_html or category.auto_msgs or "No message"
             ticket.send_mail(
                 category.email, vals.get("client_email"), custombody, False)
-            http.Response.status = "201"
+            # http.Response.status = "201"
             return """<h1> Issues Submitted successfully... Please expect our response
         </h1>"""
         except Exception as e:
             _logger.exception(e)
-            http.Response.status = "400"
+            # http.Response.status = "400"
             return {"status": "failure", "message": str(e)}
         
     @http.route("/helpdesk/ticket", type="http", website=True, auth="public", methods=["GET"], csrf=False)
