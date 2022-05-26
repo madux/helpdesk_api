@@ -41,23 +41,23 @@ class APIController(http.Controller):
             "status": "success"
         }
         helpdesk_categories = request.env['helpdeskcategory.model'].sudo().search([])
-        http.Response.status = "201"
+        # http.Response.status = "201"
         return {
             "status": "successful",
             "ticket_data": [{'id': category.id, 'ticket_id': category.name} for category in helpdesk_categories]
         }
 
-    @http.route("/api/v1/issues", type="http", auth="public", methods=["GET"], csrf=False)
-    def get_issue(self, **kw):
-        response = {
-            "status": "success"
-        }
-        helpdesk_tickets = request.env['helpdeskticket.model'].sudo().search([])
-        http.Response.status = "201"
-        return {
-            "status": "successful",
-            "ticket_data": [{'id': ticket.id, 'ticket_id': ticket.name, 'client_email': ticket.client_email} for ticket in helpdesk_tickets]
-        }
+    # @http.route("/api/v1/issues", type="http", auth="public", methods=["GET"], csrf=False)
+    # def get_issue(self, **kw):
+    #     response = {
+    #         "status": "success"
+    #     }
+    #     helpdesk_tickets = request.env['helpdeskticket.model'].sudo().search([])
+    #     http.Response.status = "201"
+    #     return {
+    #         "status": "successful",
+    #         "ticket_data": [{'id': ticket.id, 'ticket_id': ticket.name, 'client_email': ticket.client_email} for ticket in helpdesk_tickets]
+    #     }
 
     @http.route("/api/v1/issues", type="http", auth="none", methods=["POST"], csrf=False)
     def create_issue(self, **kw):
