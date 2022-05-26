@@ -206,11 +206,12 @@ class TicketModel(models.Model):
 
     @api.model
     def create(self, vals):
+        record = super(TicketModel, self).create(vals)
         sequence = self.env['ir.sequence'].next_by_code('helpdeskticket.model')
         last_create_ticket = self.env['helpdeskticket.model'].search([])
-        ticketid= f'TIC00000 {str(last_create_ticket[-1].id)}' if last_create_ticket else f'TIC00000{self.id}'
+        ticketid= f'TI00000 {str(last_create_ticket[-1].id)}' if last_create_ticket else f'TIC00000{self.id}'
         vals['name'] = sequence or ticketid
-        return super(TicketModel, self).create(vals)
+        return record
         
     def write(self, vals):
         if 'comment' in vals:

@@ -3,6 +3,7 @@ import logging
 from odoo import _
 from odoo import http
 from odoo.http import request
+import uuid
 _logger = logging.getLogger(__name__)
 
 
@@ -79,6 +80,7 @@ class APIController(http.Controller):
             category_id = kw.get("category") or None
             sla_id = int(kw.get("sla_ids")) if kw.get("sla_ids") else False
             priority = kw.get("priority")
+            sequence = request.env['ir.sequence'].sudo().next_by_code('helpdeskticket.model')
             category = request.env['helpdeskcategory.model'].sudo().search([("id", "=", category_id)], limit=1)
             vals = {
                 'description': kw.get("description"),
@@ -88,6 +90,7 @@ class APIController(http.Controller):
                 'client_name': kw.get("client_name"),
                 'note': kw.get("note"),
                 'active': True,
+                'name': uuid.uuid1(),
                 # 'sla_id': sla_id,
                 'priority': "1" if priority == "low" else "2" if priority == "medium" else "3" if priority == "high" else "4" if priority == "urgent" else "0",
             }
