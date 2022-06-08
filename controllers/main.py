@@ -90,7 +90,7 @@ class APIController(http.Controller):
                 'client_name': kw.get("client_name"),
                 'note': kw.get("note"),
                 'active': True,
-                'name': uuid.uuid1(),
+                # 'name': uuid.uuid1(),
                 # 'sla_id': sla_id,
                 'priority': "1" if priority == "low" else "2" if priority == "medium" else "3" if priority == "high" else "4" if priority == "urgent" else "0",
             }

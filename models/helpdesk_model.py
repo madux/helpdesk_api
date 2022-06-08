@@ -6,6 +6,8 @@ from odoo.exceptions import ValidationError
 from datetime import datetime, timedelta
 from odoo.tools.safe_eval import safe_eval
 import logging
+import uuid
+
 _logger = logging.getLogger(__name__)
 
 TICKET_PRIORITY = [
@@ -210,7 +212,7 @@ class TicketModel(models.Model):
         sequence = self.env['ir.sequence'].next_by_code('helpdeskticket.model')
         last_create_ticket = self.env['helpdeskticket.model'].search([])
         ticketid= f'TI00000 {str(last_create_ticket[-1].id)}' if last_create_ticket else f'TIC00000{self.id}'
-        vals['name'] = sequence or ticketid
+        record.name = sequence or uuid.uuid1()
         return record
         
     def write(self, vals):
